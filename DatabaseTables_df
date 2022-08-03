@@ -1,0 +1,6 @@
+use dr_report;
+
+
+
+%python
+df = spark.sql("SELECT * FROM case_base")
