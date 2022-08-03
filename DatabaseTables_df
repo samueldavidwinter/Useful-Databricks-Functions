@@ -1,6 +1,16 @@
+# Py instead of SQL from DatabaseTables
+
 use dr_report;
 
 
 
 %python
 df = spark.sql("SELECT * FROM case_base")
+
+# Create new sql table
+
+
+df.createOrReplaceTempView('case_base2')
+
+df2 = spark.sql('SELECT * FROM case_base2 WHERE flightduration < 100')
+
