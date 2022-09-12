@@ -14,3 +14,13 @@ df.createOrReplaceTempView('case_base2')
 
 df2 = spark.sql('SELECT * FROM case_base2 WHERE flightduration < 100')
 
+
+# Create a list of databrick tables 
+db_list = [x[0] for x in spark.sql("SHOW DATABASES").rdd.collect()]
+ 
+ 
+for i in db_list:
+  spark.sql("SHOW TABLES IN {}".format(i)).createOrReplaceTempView(str(i)+"TablesList")
+  
+ # Create a dataframe with databrick tables 
+ df = spark.sql("show tables in {}".format("raw_vault"))
