@@ -22,9 +22,24 @@ db_list = [x[0] for x in spark.sql("SHOW DATABASES").rdd.collect()]
 for i in db_list:
   spark.sql("SHOW TABLES IN {}".format(i)).createOrReplaceTempView(str(i)+"TablesList")
   
- # Create a dataframe with databrick tables 
- df = spark.sql("show tables in {}".format("raw_vault"))
- 
-  # Create a column with databrick tables matching a patern
- hub_dataframe_allTables = df.filter(df.tableName.contains("_1"))
+# Create a dataframe with databrick tables 
+df = spark.sql("show tables in {}".format("raw_vault"))
+
+ # Create a column with databrick tables matching a patern
+hub_dataframe_allTables = df.filter(df.tableName.contains("_1"))
 hub_dataframe_allTablesOnly = df.select("tableName")
+
+#Combining dataframes together
+unionDF = df1.union(df2)
+unionDF.show(truncate=False)
+
+#Writing and Reading Dataframes to parquet in dfbs
+   # Remove the file if it exists
+dbutils.fs.rm("/tmp/databricks-df-example.parquet", True)
+unionDF.write.format("parquet").save("/tmp/databricks-df-example.parquet")
+
+
+parquetDF = spark.read.format("parquet").load("/tmp/databricks-df-example.parquet")
+parquetDF.show(truncate=False)
+
+
