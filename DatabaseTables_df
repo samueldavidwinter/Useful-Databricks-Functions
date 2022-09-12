@@ -24,3 +24,7 @@ for i in db_list:
   
  # Create a dataframe with databrick tables 
  df = spark.sql("show tables in {}".format("raw_vault"))
+ 
+  # Create a column with databrick tables matching a patern
+ hub_dataframe_allTables = df.filter(df.tableName.contains("_1"))
+hub_dataframe_allTablesOnly = df.select("tableName")
