@@ -1,0 +1,17 @@
+
+%sql
+USE raw_vault;
+SELECT * FROM hub_activity LIMIT 3
+
+
+
+%sql
+use raw_vault;
+
+
+%python
+df.spark.sql("SELECT * FROM hub_activity")
+
+
+df.repartition(1).write.format("parquet").option("header", "true").save("dbfs:/FileStore/goodiesFromSam")
+
