@@ -1,22 +1,25 @@
-  View Data
+    View Data
+  With SQL 
 %sql
 USE raw_vault;
 SELECT * FROM hub_activity LIMIT 3
 
-
-
 %sql
 use raw_vault;
 
-
+  With Python
 %python
 df.spark.sql("SELECT * FROM hub_activity")
 
 
 df.repartition(1).write.format("parquet").option("header", "true").save("dbfs:/FileStore/goodiesFromSam")
 
-  Write to Local
+
+
+
+    Write to Local (After DB token is configured)
+
 dbfs cp dbfs:/FileStore/goodiesFromSam/3Geneysis/part-00000-tid-6235184272482111912-f2c53184-c1ff-479a-af80-5b17e8e65461-25-1-c000.snappy.parquet downloads/your_file.csv
 
-  Read to pandas from DFBS
+   Read to pandas from DFBS  (After DB token is configured)
 spark.sql("SELECT * FROM sandbox_dr.postcode_master").toPandas()
