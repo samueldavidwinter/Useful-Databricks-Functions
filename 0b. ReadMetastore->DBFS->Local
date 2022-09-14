@@ -1,4 +1,4 @@
-    View Data
+    View Hive Metastore Data
   With SQL 
 %sql
 USE raw_vault;
