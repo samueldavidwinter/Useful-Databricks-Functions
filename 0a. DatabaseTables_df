@@ -1,3 +1,43 @@
+# Creating a Delta Lake table from a dataframe (to do so, we need to specify the format as delta)
+# Load a file into a dataframe
+df = spark.read.load('/data/mydata.csv', format='csv', header=True)
+
+# Save the dataframe as a delta table
+delta_table_path = "/delta/mydata"
+df.write.format("delta").save(delta_table_path)
+
+
+#Replace an existing Delta Lake table with the contents of a dataframe by using the overwrite mode:
+new_df.write.format("delta").mode("overwrite").save(delta_table_path)
+
+#You can also add rows from a dataframe to an existing table by using the append mode:
+new_rows_df.write.format("delta").mode("append").save(delta_table_path)
+
+
+
+  # Making conditional updates
+from delta.tables import *
+from pyspark.sql.functions import *
+
+# Create a deltaTable object
+deltaTable = DeltaTable.forPath(spark, delta_table_path)
+
+# Update the table (reduce price of accessories by 10%)
+deltaTable.update(
+    condition = "Category == 'Accessories'",
+    set = { "Price": "Price * 0.9" })
+
+
+  # Querying Previous Versions of a Table
+
+df = spark.read.format("delta").option("versionAsOf", 0).load(delta_table_path)
+ #Alternatively, you can specify a timestamp by using the timestampAsOf option:
+
+df = spark.read.format("delta").option("timestampAsOf", '2022-01-01').load(delta_table_path)
+
+
+
+
 # Py instead of SQL from DatabaseTables
 
 use dr_report;
