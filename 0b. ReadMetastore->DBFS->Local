@@ -65,9 +65,9 @@ df2 = spark.sql('SELECT * FROM case_base2 WHERE flightduration < 100')
 
 #Writing and Reading Dataframes to parquet in dfbs
    # Remove the file if it exists
-dbutils.fs.rm("/tmp/databricks-df-example.parquet", True)
-unionDF.write.format("parquet").save("/tmp/databricks-df-example.parquet")
+      dbutils.fs.rm("/tmp/databricks-df-example.parquet", True)
+      unionDF.write.format("parquet").save("/tmp/databricks-df-example.parquet")
 
 
-parquetDF = spark.read.format("parquet").load("/tmp/databricks-df-example.parquet")
-parquetDF.show(truncate=False)
+      parquetDF = spark.read.format("parquet").load("/tmp/databricks-df-example.parquet")
+      parquetDF.show(truncate=False)
