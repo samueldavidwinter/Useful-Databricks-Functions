@@ -11,6 +11,9 @@ use raw_vault;
 %python
 df.spark.sql("SELECT * FROM hub_activity")
 
+  # Read to pandas from DFBS  (After DB token is configured)
+  spark.sql("SELECT * FROM sandbox_dr.postcode_master").toPandas()
+
 #Create Tables
     #Global Unmanaged/external table 
     df.repartition(1).write.format("parquet").option("header", "true").save("dbfs:/FileStore/goodiesFromSam")
@@ -27,6 +30,8 @@ df.spark.sql("SELECT * FROM hub_activity")
     df.createOrReplaceTempView()
     - Not accessible from other clusters or workbooks 
     - Not registered in the meta-store
+    df2 = spark.sql('SELECT * FROM case_base2 WHERE flightduration < 100')
+
     
     
     # Global View
@@ -44,21 +49,6 @@ df.spark.sql("SELECT * FROM hub_activity")
 # Write to Local (After DB token is configured)
 
     dbfs cp dbfs:/FileStore/goodiesFromSam/3Geneysis/part-00000-tid-6235184272482111912-f2c53184-c1ff-479a-af80-5b17e8e65461-25-1-c000.snappy.parquet downloads/your_file.csv
-
- #  Read to pandas from DFBS  (After DB token is configured)
-    spark.sql("SELECT * FROM sandbox_dr.postcode_master").toPandas()
-
-
-
-
-
-# Create new sql table
-
-
-df.createOrReplaceTempView('case_base2')
-
-df2 = spark.sql('SELECT * FROM case_base2 WHERE flightduration < 100')
-
 
 
 
