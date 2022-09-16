@@ -1,5 +1,5 @@
-    View Hive Metastore Data
-  With SQL 
+#View Hive Metastore Data
+  #With SQL 
 %sql
 USE raw_vault;
 SELECT * FROM hub_activity LIMIT 3
@@ -7,19 +7,67 @@ SELECT * FROM hub_activity LIMIT 3
 %sql
 use raw_vault;
 
-  With Python
+  #With Python
 %python
 df.spark.sql("SELECT * FROM hub_activity")
 
-
+#Create Tables
+    #Global Unmanaged/external table 
 df.repartition(1).write.format("parquet").option("header", "true").save("dbfs:/FileStore/goodiesFromSam")
 
+- Spark will manage the metadata, we control the data location
+- Available across all clusters 
+- This is set via the path option 
+
+    #Global Managed table
+df.write.saveAsTable("my_table")
+- Spark manages both the data and the metadata. 
+- A global managed table is available across all clusters.
+
+    #Local Table / Temp View
+    df.createOrReplaceTempView()
+    - Not accessible from other clusters or workbooks 
+    - Not registered in the meta-store
+    
+    
+    # Global View
+    df.createOrReplaceGlobalTempView("my_global_view")
+    - Accessible from other clusters or workbooks ( spark.read.table("global_temp.my_global_view") )
+    - Not registered in the meta-store
+    
+    # Global Permanat View 
+    spark.sql("CREATE VIEW permanent_view AS SELECT * FROM table")
+    - The view definition is recorded in the underlying metastore. 
+    - One can only create permanent view on global managed table or global unmanaged table. 
+    - Permanent views are only available in SQL API — not available in dataframe API
 
 
-
-    Write to Local (After DB token is configured)
+# Write to Local (After DB token is configured)
 
 dbfs cp dbfs:/FileStore/goodiesFromSam/3Geneysis/part-00000-tid-6235184272482111912-f2c53184-c1ff-479a-af80-5b17e8e65461-25-1-c000.snappy.parquet downloads/your_file.csv
 
    Read to pandas from DFBS  (After DB token is configured)
 spark.sql("SELECT * FROM sandbox_dr.postcode_master").toPandas()
+
+
+
+
+
+# Create new sql table
+
+
+df.createOrReplaceTempView('case_base2')
+
+df2 = spark.sql('SELECT * FROM case_base2 WHERE flightduration < 100')
+
+
+
+
+#Writing and Reading Dataframes to parquet in dfbs
+   # Remove the file if it exists
+dbutils.fs.rm("/tmp/databricks-df-example.parquet", True)
+unionDF.write.format("parquet").save("/tmp/databricks-df-example.parquet")
+
+
+parquetDF = spark.read.format("parquet").load("/tmp/databricks-df-example.parquet")
+parquetDF.show(truncate=False)
