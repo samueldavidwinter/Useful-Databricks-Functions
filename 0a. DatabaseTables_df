@@ -7,7 +7,8 @@ delta_table_path = "/delta/mydata"
 df.write.format("delta").save(delta_table_path)
 
 
-Updating a delta lake table
+
+# Updating a delta lake table
   # Replace an existing Delta Lake table with the contents of a dataframe by using the overwrite mode:
 new_df.write.format("delta").mode("overwrite").save(delta_table_path)
 
@@ -28,8 +29,8 @@ deltaTable.update(
     set = { "Price": "Price * 0.9" })
 
 
-  # Querying Previous Versions of a Table
 
+# Querying Previous Versions of a Table
 df = spark.read.format("delta").option("versionAsOf", 0).load(delta_table_path)
 
   # Alternatively, you can specify a timestamp by using the timestampAsOf option:
