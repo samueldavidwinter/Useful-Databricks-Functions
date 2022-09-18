@@ -1,0 +1,36 @@
+Observe amount of missing data with Count attribute of the describe functon
+display(dataset.describe())
+
+
+# Remove null values
+## Via Imput in X features 
+
+from pyspark.ml.feature import Imputer
+
+inputCols = ["passengerCount"]
+outputCols = ["passengerCount"]
+
+imputer = Imputer(strategy="median", inputCols=inputCols, outputCols=outputCols)
+imputerModel = imputer.fit(dataset)
+imputedDF = imputerModel.transform(dataset)
+display(imputedDF)
+
+##Droping empty rows in y target
+imputedDF = imputedDF.na.drop(subset=["totalAmount"])
+display(imputedDF.describe())
+
+
+# Expressing the cyclal nature of a feature 
+def get_sin_cosine(value, max_value):
+  sine =  np.sin(value * (2.*np.pi/max_value))
+  cosine = np.cos(value * (2.*np.pi/max_value))
+  return (sine.tolist(), cosine.tolist())
+
+schema = StructType([
+    StructField("sine", DoubleType(), False),
+    StructField("cosine", DoubleType(), False)
+])
+
+get_sin_cosineUDF = udf(get_sin_cosine, schema)
+
+print("UDF get_sin_cosineUDF defined.")
