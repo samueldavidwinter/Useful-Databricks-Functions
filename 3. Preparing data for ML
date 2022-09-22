@@ -18,6 +18,10 @@ display(dataset.describe())
   ##Droping empty rows in y target
     imputedDF = imputedDF.na.drop(subset=["totalAmount"])
     display(imputedDF.describe())
+    
+ # Chaning the data type
+    dataset = dataset.withColumn("isPaidTimeOff", col("isPaidTimeOff").cast("integer"))
+
 
 
 # Expressing the cyclal nature of a feature 
