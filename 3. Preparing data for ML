@@ -3,34 +3,68 @@ display(dataset.describe())
 
 
 # Remove null values
-## Via Imput in X features 
+  ## Via Impute in X features 
 
-from pyspark.ml.feature import Imputer
+    from pyspark.ml.feature import Imputer
 
-inputCols = ["passengerCount"]
-outputCols = ["passengerCount"]
+    inputCols = ["passengerCount"]
+    outputCols = ["passengerCount"]
 
-imputer = Imputer(strategy="median", inputCols=inputCols, outputCols=outputCols)
-imputerModel = imputer.fit(dataset)
-imputedDF = imputerModel.transform(dataset)
-display(imputedDF)
+    imputer = Imputer(strategy="median", inputCols=inputCols, outputCols=outputCols)
+    imputerModel = imputer.fit(dataset)
+    imputedDF = imputerModel.transform(dataset)
+    display(imputedDF)
 
-##Droping empty rows in y target
-imputedDF = imputedDF.na.drop(subset=["totalAmount"])
-display(imputedDF.describe())
+  ##Droping empty rows in y target
+    imputedDF = imputedDF.na.drop(subset=["totalAmount"])
+    display(imputedDF.describe())
 
 
 # Expressing the cyclal nature of a feature 
-def get_sin_cosine(value, max_value):
-  sine =  np.sin(value * (2.*np.pi/max_value))
-  cosine = np.cos(value * (2.*np.pi/max_value))
-  return (sine.tolist(), cosine.tolist())
+  def get_sin_cosine(value, max_value):
+    sine =  np.sin(value * (2.*np.pi/max_value))
+    cosine = np.cos(value * (2.*np.pi/max_value))
+    return (sine.tolist(), cosine.tolist())
 
-schema = StructType([
-    StructField("sine", DoubleType(), False),
-    StructField("cosine", DoubleType(), False)
-])
+  schema = StructType([
+      StructField("sine", DoubleType(), False),
+      StructField("cosine", DoubleType(), False)
+  ])
 
-get_sin_cosineUDF = udf(get_sin_cosine, schema)
+  get_sin_cosineUDF = udf(get_sin_cosine, schema)
+  
+# Scaling features 
+  numerical_cols = ["passengerCount", "tripDistance", "snowDepth", "precipTime", "precipDepth", "temperature", "hour_sine", "hour_cosine"]
+  categorical_cols = ["day_of_week", "month_num", "normalizeHolidayName", "isPaidTimeOff"]
+  label_column = "totalAmount"
 
-print("UDF get_sin_cosineUDF defined.")
+  # Normalisation
+      assembler = VectorAssembler().setInputCols(numerical_cols).setOutputCol('numerical_features')
+      scaler = MinMaxScaler(inputCol=assembler.getOutputCol(), outputCol="scaled_numerical_features")
+
+      partialPipeline = Pipeline().setStages([assembler, scaler])
+      pipelineModel = partialPipeline.fit(engineeredDF)
+      scaledDF = pipelineModel.transform(engineeredDF)
+      
+# one hot encodimmg 
+from pyspark.ml.feature import StringIndexer
+from pyspark.ml.feature import OneHotEncoder
+
+stages = [] # stages in our Pipeline
+for categorical_col in categorical_cols:
+    # Category Indexing with StringIndexer
+    stringIndexer = StringIndexer(inputCol=categorical_col, outputCol=categorical_col + "_index", handleInvalid="skip")
+    encoder = OneHotEncoder(inputCols=[stringIndexer.getOutputCol()], outputCols=[categorical_col + "_classVector"])
+    # Add stages.  These are not run here, but will run all at once later on.
+    stages += [stringIndexer, encoder]
+
+encodedDF = scaledDF.withColumn("isPaidTimeOff", col("isPaidTimeOff").cast("integer"))
+partialPipeline = Pipeline().setStages(stages)
+pipelineModel = partialPipeline.fit(encodedDF)
+encodedDF = pipelineModel.transform(encodedDF)
+
+display(encodedDF)
+      
+   
+
+
