@@ -68,6 +68,14 @@ pipelineModel = partialPipeline.fit(encodedDF)
 encodedDF = pipelineModel.transform(encodedDF)
 
 display(encodedDF)
+
+
+# Use a `VectorAssembler` to combine all the feature columns into a single vector column named **features**.
+
+assemblerInputs = [c + "_classVector" for c in categorical_cols] + ["scaled_numerical_features"]
+assembler = VectorAssembler(inputCols=assemblerInputs, outputCol="features")
+stages += [assembler]
+print("Used a VectorAssembler to combine all the feature columns into a single vector column named features.")
       
    
 
