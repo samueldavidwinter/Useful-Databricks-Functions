@@ -1,0 +1,10 @@
+#  the strength of correlation between two field, from -1 to 1 
+
+df.corr('tripDistance', 'totalAmount')
+
+# Using databricks visualisations
+
+Run a cell that outputs data
+Click on the second icon underneath the executed cell and choose the visualisation option
+
+df.describe()
