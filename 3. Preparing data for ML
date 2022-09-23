@@ -50,9 +50,9 @@ display(dataset.describe())
       pipelineModel = partialPipeline.fit(engineeredDF)
       scaledDF = pipelineModel.transform(engineeredDF)
       
-# one hot encodimmg 
-from pyspark.ml.feature import StringIndexer
-from pyspark.ml.feature import OneHotEncoder
+  # one hot encodimmg 
+    from pyspark.ml.feature import StringIndexer
+    from pyspark.ml.feature import OneHotEncoder
 
 stages = [] # stages in our Pipeline
 for categorical_col in categorical_cols:
@@ -62,12 +62,11 @@ for categorical_col in categorical_cols:
     # Add stages.  These are not run here, but will run all at once later on.
     stages += [stringIndexer, encoder]
 
-encodedDF = scaledDF.withColumn("isPaidTimeOff", col("isPaidTimeOff").cast("integer"))
-partialPipeline = Pipeline().setStages(stages)
-pipelineModel = partialPipeline.fit(encodedDF)
-encodedDF = pipelineModel.transform(encodedDF)
+  partialPipeline = Pipeline().setStages(stages)
+  pipelineModel = partialPipeline.fit(encodedDF)
+  encodedDF = pipelineModel.transform(encodedDF)
 
-display(encodedDF)
+  display(encodedDF)
 
 
 # Use a `VectorAssembler` to combine all the feature columns into a single vector column named **features**.
@@ -79,4 +78,5 @@ print("Used a VectorAssembler to combine all the feature columns into a single v
       
    
 
+# A pipeline for NLP processing
 
