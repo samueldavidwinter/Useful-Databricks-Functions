@@ -2,9 +2,11 @@
 
 A transformer takes a DataFrame as an input and returns a new DataFrame with one or more columns appended to it.
 Transformers implement a .transform() method.
+- Very helpful for feature engineering and selection
 
 An estimator takes a DataFrame as an input and returns a model, which itself is a transformer.
 Estimators implements a .fit() method.
+
 
 A pipeline combines together transformers and estimators to make it easier to combine multiple algorithms.
 Pipelines implement a .fit() method.
