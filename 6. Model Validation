@@ -1,4 +1,4 @@
 Spark ML includes built-in summary statistics for models based on the algorithm of choice
 
-For both test and train datasets, in linear regression databricks supports 
+For example, for both test and train datasets, in linear regression databricks supports:
 - Root Mean Square Error (RMSE), Mean Absolute Error (MAE) and coefficient of determination (R-squared). 
