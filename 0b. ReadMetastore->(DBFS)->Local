@@ -20,21 +20,25 @@ MetaStore -> Local
     spark.sql("SELECT * FROM sandbox_dr.postcode_master").toPandas()
 
 
+
+# Write to Local (After DB token is configured)
+    dbfs cp dbfs:/FileStore/goodiesFromSam/3Geneysis/part-00000-tid-6235184272482111912-f2c53184-c1ff-479a-af80-5b17e8e65461-25-1-c000.snappy.parquet downloads/your_file.csv
+
+
 Metastore->(DBFS)->Local
 #Writing and Reading Dataframes to parquet in dfbs
    # Remove the file if it exists
       dbutils.fs.rm("/tmp/databricks-df-example.parquet", True)
       unionDF.write.format("parquet").save("/tmp/databricks-df-example.parquet")
+      
+        #If in DFBS, we can cache a dataframe so that we only read it from disk once.
+        df.cache()
+        df.is_cached
 
 
       parquetDF = spark.read.format("parquet").load("/tmp/databricks-df-example.parquet")
       parquetDF.show(truncate=False)
 
-
-
-# Write to Local (After DB token is configured)
-
-    dbfs cp dbfs:/FileStore/goodiesFromSam/3Geneysis/part-00000-tid-6235184272482111912-f2c53184-c1ff-479a-af80-5b17e8e65461-25-1-c000.snappy.parquet downloads/your_file.csv
 
 
 
