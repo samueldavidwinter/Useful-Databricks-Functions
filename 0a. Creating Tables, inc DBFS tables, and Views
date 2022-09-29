@@ -28,6 +28,25 @@
     - The view definition is recorded in the underlying metastore. 
     - One can only create permanent view on global managed table or global unmanaged table. 
     - Permanent views are only available in SQL API — not available in dataframe API
+    
+    # Creating from DBFS
+    import pandas as pd
+    from io import StringIO
+
+        data = """
+        ***copy and paste the output from databricks here, it'll look a bit like: ***
+
+        CODE,L,PS
+        5d8A,N,P60490
+        5d8b,H,P80377
+        5d8C,O,P60491
+        """
+
+        df = pd.read_csv(StringIO(data), sep=',')
+        #print(df)
+        df.to_csv('/dbfs/FileStore/***your path**.txt')
+
+        pandas_df = pd.read_csv("/dbfs/FileStore/NJ/file1.txt", header='infer')
 
 
 
