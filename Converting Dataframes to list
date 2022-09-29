@@ -1,0 +1,8 @@
+# With duplicates
+
+dataframe.select(“collect_list(“column”))
+
+# Without Duplicates
+
+dataframe.select(“collect_set(“column”))
+
