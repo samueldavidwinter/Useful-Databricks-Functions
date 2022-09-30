@@ -1,0 +1,32 @@
+1. Init Cap
+- Capatlizes each word in a string 
+df_csv.select(initcap("DEST_COUNTRY_NAME")).show(2)
+
+
+2, Add both leading and Trailing space (hashtag in this instance)
+ 
+df_states = df_states.withColumn('states_Name_new', lpad(df_states.state_name,20, '#'))
+df_states = df_states.withColumn('states_Name_new', rpad(df_states.states_Name_new,24, '#'))
+ 
+df_states.show(truncate =False)
+
+3. Remove leading and trailing space of the column in pyspark
+from pyspark.sql.functions import *
+ 
+df_states = df_states.withColumn('states_Name', trim(df_states.state_name))
+df_states.show(truncate =False)
+
+4. String Split of the column in pyspark 
+split() Function in pyspark takes the column name as first argument ,followed by delimiter (“-”) as second argument. 
+Which splits the column by the mentioned delimiter (“-”).
+getItem(0) gets the first part of split . getItem(1) gets the second part of split
+
+### String Split of the column in pyspark
+from pyspark.sql.functions import split
+ 
+df_states.withColumn("col1", split(col("State_Name"), "-").getItem(0)).withColumn("col2", split(col("State_Name"), "-").getItem(1)).show()
+
+5.  df.colname.substr(start,length)
+df = df_states.withColumn("substring_statename", df_states.state_name.substr(1,6))
+df.show()
+
